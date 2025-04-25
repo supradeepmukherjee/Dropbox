@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { boolean, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const files = pgTable('files', {
@@ -21,3 +22,15 @@ export const files = pgTable('files', {
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
+
+export const filesRelations = relations(files, ({ many, one }) => ({
+    parent: one(files, {
+        fields: [files.parentId],
+        references: [files.id]
+    }),
+    children: many(files)
+}))
+
+//type definitions
+export const File = typeof files.$inferSelect
+export const NewFile = typeof files.$inferInsert
