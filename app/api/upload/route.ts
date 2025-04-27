@@ -6,12 +6,15 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
         const { userId } = await auth()
-        if (!userId) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+        if (!userId)
+            return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
         const body = await req.json()
         console.log(body)
         const { imgKit, userID } = body
-        if (userID !== userId) return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
-        if (!imgKit || !imgKit.url) return NextResponse.json({ error: 'Invalid File Upload Data' }, { status: 401 })
+        if (userID !== userId)
+            return NextResponse.json({ error: 'Unauthorised' }, { status: 401 })
+        if (!imgKit || !imgKit.url)
+            return NextResponse.json({ error: 'Invalid File Upload Data' }, { status: 400 })
         const [newFile] = await db.insert(files).values({
             name: imgKit.name || 'Untitled',
             path: imgKit.filePath || `/dropbox/${userId}/${imgKit.name}`,
